@@ -31,6 +31,13 @@ def delete_creature(id: int, database: Session, commit: bool = True) -> int:
     return rowcount
 
 
+def update_creature(id: int, name: str, database: Session) -> int:
+    rowcount = database.query(Creatures).filter_by(id = id).update({"name": name})
+    database.commit()
+    return rowcount
+
+
+
 def nuke_creatures(database: Session) -> int:
     rowcount = database.query(Creatures).delete()
     database.commit()
