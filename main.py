@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from .database import SessionLocal
-from .datalayer import get_creatures
+from .datalayer import get_creatures, add_creature, get_creature, delete_creature
 
 
 class Thing(BaseModel):
@@ -35,6 +35,23 @@ def confirmation_message():
 def show_creatures(database=Depends(get_db)):
     result = get_creatures(database)
     return result
+
+@app.get("/show_creature")
+def show_creature(id: int, database=Depends(get_db)):
+    result = get_creature(id, database)
+    return result
+
+
+@app.post("/create_creature")
+def create_creature(name: str, database=Depends(get_db)):
+    creature_id = add_creature(name, database)
+    return {"message": f"Created: {name} with id {creature_id}"}
+
+
+@app.delete("/remove_creature")
+def remove_creature(id: int, database=Depends(get_db)):
+    rowcount = delete_creature(id, database)
+    return {"message": f"Deleted {rowcount} row(s)"}
     
 
 @app.get("/items/{item_id}")
